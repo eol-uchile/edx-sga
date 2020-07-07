@@ -911,9 +911,9 @@ class StaffGradedAssignmentXBlock(
     def is_instructor(self):
         # pylint: disable=no-member
         """
-        Check if user role is instructor.
+        Check if user role is instructor/staff.
         """
-        return self.xmodule_runtime.get_user_role() == "instructor"
+        return self.is_course_staff()
 
     def show_staff_grading_interface(self):
         """
