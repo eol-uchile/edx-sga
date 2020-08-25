@@ -33,8 +33,8 @@ def reverse_fix_submission_types(apps, schema_editor):
     StudentItem.objects.filter(item_type="edx_sga", item_id__contains="type@edx_sga").update(item_type="sga")
 
 class Migration(migrations.Migration):
-
     dependencies = [
+        ('submissions', '0005_CreateTeamModel'),
     ]
 
     operations = [
