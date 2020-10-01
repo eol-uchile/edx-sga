@@ -16,6 +16,7 @@ import six
 
 import pkg_resources
 import pytz
+from django.contrib.auth.models import User
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from django.core.files import File
@@ -847,15 +848,14 @@ class StaffGradedAssignmentXBlock(
         )
 
         for submission in submissions:
-            if is_finalized_submission(submission_data=submission):
-                assignments.append(
-                    {
-                        "submission_id": submission["uuid"],
-                        "filename": submission["answer"]["filename"],
-                        "timestamp": submission["submitted_at"]
-                        or submission["created_at"],
-                    }
-                )
+            assignments.append(
+                {
+                    "submission_id": submission["uuid"],
+                    "filename": submission["answer"]["filename"],
+                    "timestamp": submission["submitted_at"]
+                    or submission["created_at"],
+                }
+            )
 
         assignments.sort(key=lambda assignment: assignment["timestamp"], reverse=True)
         return assignments
@@ -988,7 +988,8 @@ class StaffGradedAssignmentXBlock(
     def get_real_user(self):
         """returns session user"""
         # pylint: disable=no-member
-        return self.runtime.get_real_user(self.xmodule_runtime.anonymous_student_id)
+        # return self.runtime.get_real_user(self.xmodule_runtime.anonymous_student_id)
+        return User.objects.get(id=self.runtime.user_id)
 
     def correctness_available(self):
         """
