@@ -386,6 +386,7 @@ function StaffGradedAssignmentXBlock(runtime, element) {
               .html(gettext("Student submission file ready for download"))
               .removeClass("preparing-msg")
               .addClass("ready-msg");
+            window.location = downloadSubmissionsUrl;
           }).fail(function() {
             $(element).find('#download-init-button').removeClass("disabled");
             $(element).find('.task-message')

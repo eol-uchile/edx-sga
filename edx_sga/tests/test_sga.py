@@ -139,12 +139,10 @@ class StaffGradedAssignmentMockedTests(TempfileMixin):
 
         self.course_id = CourseLocator(org='foo', course='baz', run='bar')
         self.runtime = FakeWorkbenchRuntime()
+        self.runtime.user_id = 1234
         self.scope_ids = mock.Mock()
-        self.staff = mock.Mock(return_value={
-            "password": "test",
-            "username": "tester",
-            "is_staff": True
-        })
+        self.staff = User.objects.create(id=1234, username="tester", password="test", is_staff=True)
+
 
     def make_xblock(self, display_name=None, **kwargs):
         """
@@ -637,6 +635,9 @@ class StaffGradedAssignmentMockedTests(TempfileMixin):
         ), mock.patch(
             'edx_sga.utils.default_storage.modified_time',
             return_value=datetime.datetime.now()
+        ), mock.patch(
+            'edx_sga.utils.os.path.getmtime',
+            return_value=datetime.datetime.now().timestamp()
         ):
             response = block.prepare_download_submissions(None)
             response_body = json.loads(response.body.decode('utf-8'))
