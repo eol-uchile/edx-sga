@@ -230,7 +230,7 @@ msgstr "Ingresar Calificación"
 
 #: templates/staff_graded_assignment/show.html:130
 msgid "Upload annotated file"
-msgstr "Subir archivo de calificación"
+msgstr "Subir archivo de retroalimentación"
 
 #: templates/staff_graded_assignment/show.html:143
 msgid "Grade Submissions"
