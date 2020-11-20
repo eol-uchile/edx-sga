@@ -232,6 +232,10 @@ msgstr "Ingresar Calificación"
 msgid "Upload annotated file"
 msgstr "Subir archivo de retroalimentación"
 
+#: templates/staff_graded_assignment/show.html:145
+msgid "Reset Submission"
+msgstr "Permitir nuevo envío"
+
 #: templates/staff_graded_assignment/show.html:143
 msgid "Grade Submissions"
 msgstr "Calificar Envíos"

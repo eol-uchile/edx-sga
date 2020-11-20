@@ -81,7 +81,7 @@
         <th class="header">{% trans "Grade" %} <i class="icon fa fa-sort"/></th>
         <th class="header">{% trans "Instructor's comments" %} <i class="icon fa fa-sort"/></th>
         <th class="header">{% trans "Annotated" %} <i class="icon fa fa-sort"/></th>
-        <th class="header" colspan="2">{% trans "Actions" %}</th>
+        <th class="header" colspan="3">{% trans "Actions" %}</th>
       </tr>
       </thead>
       <tbody>
@@ -90,7 +90,7 @@
         <tr id="row-<%= assignment.module_id %>"<% if (!assignment.finalized) { %> class="not-finalized"<% } %>>
           <td><%= assignment.username %></td>
           <td><%= assignment.fullname %></td>
-          <td>
+          <td style="max-width: 280px;">
             <% if (assignment.filename) { %>
               <a href="<%= downloadUrl %>?student_id=<%= assignment.student_id %>">
                 <%= assignment.filename %>
@@ -138,6 +138,16 @@
               <label>{% trans "Upload annotated file" %}
                 <input class="fileupload" type="file" name="annotated"/>
               </label>
+            </div>
+          </td>
+          <td>
+            <div class="reset-submission">
+                <button
+                  <% if (!assignment.finalized) { %> disabled<% } %> >
+                  {% trans "Reset Submission" %}
+                </button>
+                <span class="reset-loading" style="display: none;">{% trans "Loading..." %}</span>
+                <span class="reset-error" style="display: none;">{% trans "Error" %}</span>
             </div>
           </td>
         </tr>

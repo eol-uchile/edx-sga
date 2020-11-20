@@ -482,6 +482,34 @@ class StaffGradedAssignmentMockedTests(TempfileMixin):
         ) is model_change_expected
         assert fake_submission_object.save.called is model_change_expected
 
+    @mock.patch("edx_sga.sga.StaffGradedAssignmentXBlock.is_course_staff")
+    @data(({"finalized": True}))
+    def test_reset_submission(self, finalized_setting, is_course_staff):
+        """
+        Tests that reset_submission set "finalized": False
+        Uses test_finalize_uploaded_assignment mocks for submission data/object
+        """
+        block = self.make_xblock()
+        is_course_staff.return_value = True
+        existing_submitted_at_value = django_now()
+        fake_submission_data = fake_get_submission(**finalized_setting)
+        fake_submission_object = mock.Mock(
+            submitted_at=existing_submitted_at_value,
+            answer=fake_submission_data["answer"]
+        )
+        with mock.patch(
+            "edx_sga.sga.Submission.objects.get", return_value=fake_submission_object
+        ), mock.patch(
+            "edx_sga.sga.StaffGradedAssignmentXBlock.get_submission", return_value=fake_submission_data
+        ), mock.patch(
+            "edx_sga.sga.StaffGradedAssignmentXBlock.student_state", return_value={}
+        ), mock.patch(
+            "edx_sga.sga.StaffGradedAssignmentXBlock.staff_grading_data", return_value={}
+        ):
+            block.staff_reset_submission(mock.Mock(params={"student_id": 1}))
+
+        assert fake_submission_object.answer["finalized"] is False
+
     @mock.patch("edx_sga.sga.StaffGradedAssignmentXBlock.get_student_module")
     @mock.patch("edx_sga.sga.StaffGradedAssignmentXBlock.is_course_staff")
     @mock.patch("edx_sga.sga.get_sha1")

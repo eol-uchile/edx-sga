@@ -13,6 +13,7 @@ function StaffGradedAssignmentXBlock(runtime, element) {
       element, 'staff_download_annotated'
     );
     var staffUploadUrl = runtime.handlerUrl(element, 'staff_upload_annotated');
+    var staffResetSubmissionUrl = runtime.handlerUrl(element, 'staff_reset_submission');
     var enterGradeUrl = runtime.handlerUrl(element, 'enter_grade');
     var removeGradeUrl = runtime.handlerUrl(element, 'remove_grade');
     var downloadSubmissionsUrl = runtime.handlerUrl(element, 'download_submissions');
@@ -154,6 +155,23 @@ function StaffGradedAssignmentXBlock(runtime, element) {
       $(element).find('.enter-grade-button')
         .leanModal({ closeButton: '#enter-grade-cancel' })
         .on('click', handleGradeEntry);
+
+      // Set up reset submission
+      $(element).find('#grade-info .reset-submission button').click( function() {
+        var row = $(this).parents("tr");
+        var self = $(this);
+        // Disable button and loading message
+        self.prop('disabled', true);
+        row.find('span.reset-loading').show();
+        $.post(staffResetSubmissionUrl, {'student_id':row.data("student_id")})
+          .success(renderStaffGrading) // Reload data
+          .fail(function() {
+            row.find('span.reset-loading').hide(); // hide loading
+            row.find('span.reset-error').show(); // show error message
+            self.prop('disabled', false); // enable button
+            self.css('border-color', "red"); // button border (error)
+          });
+      });
 
       // Set up annotated file upload
       $(element).find('#grade-info .fileupload').each(function () {
