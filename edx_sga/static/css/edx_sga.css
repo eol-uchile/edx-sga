@@ -47,13 +47,18 @@
     background-color: #ffffff;
 }
 
-.sga-block .upload {
+.sga-block .upload,
+.sga-block .reset-submission {
     position: relative;
     height: 40px;
 }
 
+.sga-block .reset-submission {
+    text-align: center; 
+}
+
 /* Default edx button style */
-.sga-block .upload label, .sga-block a.button {
+.sga-block .upload label, .sga-block a.button, .sga-block .reset-submission button {
     border: 1px solid #d2c9c9;
     border-radius: 3px;
     box-shadow: inset 0 1px 0 0 #fff;

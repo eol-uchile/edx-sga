@@ -292,6 +292,21 @@ class StaffGradedAssignmentXBlock(StudioEditableXBlockMixin, ShowAnswerXBlockMix
         return Response(json_body=self.student_state())
 
     @XBlock.handler
+    def staff_reset_submission(self, request, suffix=''):
+        # pylint: disable=unused-argument
+        """
+        Reset students submissions.
+        """
+        require(self.is_course_staff())
+        submission_data = self.get_submission(request.params['student_id'])
+        # Editing the Submission record directly since the API doesn't support it
+        submission = Submission.objects.get(uuid=submission_data['uuid'])
+        if submission.answer.get('finalized'):
+            submission.answer['finalized'] = False
+            submission.save()
+        return Response(json_body=self.staff_grading_data())
+    
+    @XBlock.handler
     def staff_upload_annotated(self, request, suffix=''):
         # pylint: disable=unused-argument
         """
