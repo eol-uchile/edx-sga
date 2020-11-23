@@ -143,7 +143,7 @@
           <td>
             <div class="reset-submission">
                 <button
-                  <% if (!assignment.finalized) { %> disabled<% } %> >
+                  <% if (!assignment.finalized || assignment.score != null) { %> disabled<% } %> >
                   {% trans "Reset Submission" %}
                 </button>
                 <span class="reset-loading" style="display: none;">{% trans "Loading..." %}</span>
