@@ -1,13 +1,13 @@
-celery==3.1.18
+celery==3.1.26.post2
 codecov
 coverage==4.4.2
 cryptography==2.5
 ddt==1.1.1
-djangorestframework==3.6.4
-edx-celeryutils==0.2.6
+djangorestframework==3.9.4
+edx-celeryutils==0.5.0
 edx-lint==0.5.4
 edx-opaque-keys==0.4
-edx-submissions==2.0.12
+edx-submissions==3.1.7
 jsonfield==2.1.1
 mako==1.0.7
 mock==2.0.0
@@ -24,4 +24,5 @@ six==1.11.0
 tox
 
 git+https://github.com/edx/xblock-utils.git@v1.0.5#egg=xblock-utils==1.0.5
-git+https://github.com/edx/xblock-sdk.git#egg=xblock-sdk
+git+https://github.com/edx/xblock-sdk.git@446e979bad1f3bf7f891787b32d5b2e7620b2f23#egg=xblock-sdk
+#git+https://github.com/edx/xblock-sdk.git#egg=xblock-sdk
