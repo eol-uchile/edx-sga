@@ -25,4 +25,3 @@ tox
 
 git+https://github.com/edx/xblock-utils.git@v1.0.5#egg=xblock-utils==1.0.5
 git+https://github.com/edx/xblock-sdk.git@446e979bad1f3bf7f891787b32d5b2e7620b2f23#egg=xblock-sdk
-#git+https://github.com/edx/xblock-sdk.git#egg=xblock-sdk
