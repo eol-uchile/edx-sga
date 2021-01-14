@@ -43,7 +43,7 @@ from submissions.models import Submission
 from webob.response import Response
 from xblock.core import XBlock
 from xblock.exceptions import JsonHandlerError
-from xblock.fields import DateTime, Float, Integer, Scope, String
+from xblock.fields import DateTime, Float, Integer, Scope, String, Boolean
 from xblock.fragment import Fragment
 from xblockutils.studio_editable import StudioEditableXBlockMixin
 from xmodule.contentstore.content import StaticContent
@@ -76,7 +76,7 @@ class StaffGradedAssignmentXBlock(StudioEditableXBlockMixin, ShowAnswerXBlockMix
     has_score = True
     icon_class = 'problem'
     STUDENT_FILEUPLOAD_MAX_SIZE = 40 * 1000 * 1000  # 40 MB
-    editable_fields = ('display_name', 'points', 'weight', 'showanswer', 'solution')
+    editable_fields = ('display_name', 'display_submit', 'points', 'weight', 'showanswer', 'solution')
 
     display_name = String(
         display_name=_("Display Name"),
@@ -84,6 +84,13 @@ class StaffGradedAssignmentXBlock(StudioEditableXBlockMixin, ShowAnswerXBlockMix
         scope=Scope.settings,
         help=_("This name appears in the horizontal navigation at the top of "
                "the page.")
+    )
+
+    display_submit = Boolean(
+        display_name=_("Display submit button"),
+        default=True,
+        scope=Scope.settings,
+        help=_("Display submit button after student uploads a file")
     )
 
     weight = Float(
@@ -800,6 +807,7 @@ class StaffGradedAssignmentXBlock(StudioEditableXBlockMixin, ShowAnswerXBlockMix
         # pylint: disable=no-member
         return {
             "display_name": force_text(self.display_name),
+            "display_submit": self.display_submit,
             "uploaded": uploaded,
             "annotated": annotated,
             "graded": graded,

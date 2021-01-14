@@ -43,7 +43,7 @@
             {% trans "This assignment has not yet been graded." %}
           <% } %>
         </p>
-        <% if (upload_allowed) { %>
+        <% if (upload_allowed && display_submit) { %>
           <p>
             <button type="button" class="submit btn-brand finalize-upload">
               <span class="">{% trans "Submit" %}</span>

@@ -31,6 +31,14 @@ msgid "This name appears in the horizontal navigation at the top of the page."
 msgstr "Este nombre aparece en la barra de navegacion horizontal en la parte superior de la pagina"
 
 #: sga.py:90
+msgid "Display submit button"
+msgstr "Habilitar botón 'Enviar'"
+
+#: sga.py:90
+msgid "Display submit button after student uploads a file"
+msgstr "Habilitar botón 'Enviar' después que un estudiante sube un archivo"
+
+#: sga.py:90
 msgid "Problem Weight"
 msgstr "Peso del problema"
 
