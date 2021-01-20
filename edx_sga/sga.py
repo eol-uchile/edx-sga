@@ -870,7 +870,8 @@ class StaffGradedAssignmentXBlock(StudioEditableXBlockMixin, ShowAnswerXBlockMix
         return {
             'assignments': list(get_student_data()),
             'max_score': self.max_score(),
-            'display_name': force_text(self.display_name)
+            'display_name': force_text(self.display_name),
+            "display_submit": self.display_submit
         }
 
     def get_sorted_submissions(self):
