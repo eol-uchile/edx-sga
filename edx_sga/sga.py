@@ -828,6 +828,8 @@ class StaffGradedAssignmentXBlock(
                 if not submission:
                     continue
                 user = user_by_anonymous_id(student.student_id)
+                if user is None:
+                    continue
                 student_module = self.get_or_create_student_module(user)
                 state = json.loads(student_module.state)
                 score = self.get_score(student.student_id)
