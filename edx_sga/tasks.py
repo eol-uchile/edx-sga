@@ -33,7 +33,7 @@ def _get_student_submissions(block_id, course_id, locator):
 
     def final_submissions(submissions):
         for submission in submissions:
-            if is_finalized_submission(submission_data=submission):
+            if is_finalized_submission(submission_data=submission) and user_by_anonymous_id(submission["student_id"]) is not None:
                 yield submission
 
     submissions = submissions_api.get_all_submissions(course_id, block_id, ITEM_TYPE)
