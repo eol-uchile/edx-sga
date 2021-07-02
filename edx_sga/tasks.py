@@ -44,7 +44,7 @@ def _get_student_submissions(block_id, course_id, locator):
                 submission['answer']['filename']
             )
         )
-        for submission in submissions if submission['answer']
+        for submission in submissions if submission['answer'] and user_by_anonymous_id(submission['student_id']) is not None
     ]
 
 
