@@ -8,14 +8,20 @@ import tempfile
 import zipfile
 
 from django.core.files.storage import default_storage
+
+
+#from django.core.files.storage import default_storage
 from edx_sga.constants import ITEM_TYPE
 from edx_sga.utils import get_file_storage_path
 from lms import CELERY_APP  # pylint: disable=no-name-in-module
 from opaque_keys.edx.locator import BlockUsageLocator
 from common.djangoapps.student.models import user_by_anonymous_id
 from submissions import api as submissions_api
+from edx_sga.storage import SgaStorage
+
 
 log = logging.getLogger(__name__)
+sga_storage = SgaStorage()
 
 
 def _get_student_submissions(block_id, course_id, locator):
@@ -30,6 +36,7 @@ def _get_student_submissions(block_id, course_id, locator):
     Returns:
         list(tuple): A list of 2-element tuples - (student username, submission file path)
     """
+
     submissions = submissions_api.get_all_submissions(
         course_id,
         block_id,
@@ -81,7 +88,7 @@ def _compress_student_submissions(zip_file_path, block_id, course_id, locator):
         log.info(
             "Moving zip file from memory to storage at path: %s ", zip_file_path
         )
-        default_storage.save(zip_file_path, tmp)
+        sga_storage.save(zip_file_path, tmp)
 
 
 @CELERY_APP.task
@@ -98,9 +105,9 @@ def zip_student_submissions(course_id, block_id, locator_unicode, username):
     locator = BlockUsageLocator.from_string(locator_unicode)
     zip_file_path = get_zip_file_path(username, course_id, block_id, locator)
     log.info("Creating zip file for course: %s at path: %s", locator, zip_file_path)
-    if default_storage.exists(zip_file_path):
+    if sga_storage.exists(zip_file_path):
         log.info("Deleting already-existing zip file at path: %s", zip_file_path)
-        default_storage.delete(zip_file_path)
+        sga_storage.delete(zip_file_path)
     _compress_student_submissions(
         zip_file_path,
         block_id,
