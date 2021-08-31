@@ -14,8 +14,10 @@ import six
 import pytz
 from django.conf import settings
 from django.core.files.storage import default_storage
+from edx_sga.storage import SgaStorage
 from edx_sga.constants import BLOCK_SIZE
 
+sga_storage = SgaStorage()
 
 def utcnow():
     """
@@ -78,5 +80,5 @@ def file_contents_iter(file_path):
     """
     Returns an iterator over the contents of a file located at the given file path
     """
-    file_descriptor = default_storage.open(file_path)
+    file_descriptor = sga_storage.open(file_path)
     return iter(partial(file_descriptor.read, BLOCK_SIZE), b'')

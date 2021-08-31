@@ -23,6 +23,7 @@ from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from django.core.files import File
 from django.core.files.storage import default_storage
+from edx_sga.storage import SgaStorage
 from django.template import Context, Template
 from django.utils.encoding import force_text
 from django.utils.timezone import now as django_now
@@ -50,6 +51,7 @@ from xmodule.contentstore.content import StaticContent
 from xmodule.util.duedate import get_extended_due_date
 
 log = logging.getLogger(__name__)
+sga_storage = SgaStorage()
 
 
 def reify(meth):
@@ -637,7 +639,6 @@ class StaffGradedAssignmentXBlock(StudioEditableXBlockMixin, ShowAnswerXBlockMix
         # pylint: disable=unused-argument
         """
         For a given user, clears submissions and uploaded files for this XBlock.
-
         Staff users are able to delete a learner's state for a block in LMS. When that capability is
         used, the block's "clear_student_state" function is called if it exists.
         """
@@ -740,10 +741,8 @@ class StaffGradedAssignmentXBlock(StudioEditableXBlockMixin, ShowAnswerXBlockMix
     def get_student_module(self, module_id):
         """
         Returns a StudentModule that matches the given id
-
         Args:
             module_id (int): The module id
-
         Returns:
             StudentModule: A StudentModule object
         """
@@ -752,7 +751,6 @@ class StaffGradedAssignmentXBlock(StudioEditableXBlockMixin, ShowAnswerXBlockMix
     def get_or_create_student_module(self, user):
         """
         Gets or creates a StudentModule for the given user for this block
-
         Returns:
             StudentModule: A StudentModule object
         """
@@ -1011,7 +1009,7 @@ class StaffGradedAssignmentXBlock(StudioEditableXBlockMixin, ShowAnswerXBlockMix
             self.block_id,
             self.location
         )
-        return True if default_storage.exists(zip_file_path) else False
+        return True if sga_storage.exists(zip_file_path) else False
 
     def count_archive_files(self, user):
         """
@@ -1024,7 +1022,7 @@ class StaffGradedAssignmentXBlock(StudioEditableXBlockMixin, ShowAnswerXBlockMix
             self.block_id,
             self.location
         )
-        with default_storage.open(zip_file_path, 'rb') as zip_file:
+        with sga_storage.open(zip_file_path, 'rb') as zip_file:
             with closing(ZipFile(zip_file)) as archive:
                 return len(archive.infolist())
 
