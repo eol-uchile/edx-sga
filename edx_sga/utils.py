@@ -76,9 +76,17 @@ def get_file_storage_path(locator, file_hash, original_filename):
     )
 
 
-def file_contents_iter(file_path):
+def sga_file_contents_iter(file_path):
     """
     Returns an iterator over the contents of a file located at the given file path
     """
     file_descriptor = sga_storage.open(file_path)
+    return iter(partial(file_descriptor.read, BLOCK_SIZE), b'')
+
+
+def file_contents_iter(file_path):
+    """
+    Returns an iterator over the contents of a file located at the given file path
+    """
+    file_descriptor = default_storage.open(file_path)
     return iter(partial(file_descriptor.read, BLOCK_SIZE), b'')

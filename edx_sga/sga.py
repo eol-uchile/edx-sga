@@ -32,7 +32,7 @@ from edx_sga.constants import ITEM_TYPE
 from edx_sga.showanswer import ShowAnswerXBlockMixin
 from edx_sga.tasks import (get_zip_file_name, get_zip_file_path,
                            zip_student_submissions)
-from edx_sga.utils import (file_contents_iter, get_file_modified_time_utc,
+from edx_sga.utils import (file_contents_iter, sga_file_contents_iter, get_file_modified_time_utc,
                            get_file_storage_path, get_sha1,
                            is_finalized_submission, utcnow)
 from lms.djangoapps.courseware.models import StudentModule
@@ -574,7 +574,7 @@ class StaffGradedAssignmentXBlock(StudioEditableXBlockMixin, ShowAnswerXBlockMix
                 self.block_id
             )
             return Response(
-                app_iter=file_contents_iter(zip_file_path),
+                app_iter=sga_file_contents_iter(zip_file_path),
                 content_type='application/zip',
                 content_disposition="attachment; filename=" + zip_file_name
             )
