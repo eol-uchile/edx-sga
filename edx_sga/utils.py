@@ -44,7 +44,7 @@ def get_file_modified_time_utc(file_path):
     file_timezone = pytz.utc
 
     return file_timezone.localize(
-        default_storage.modified_time(file_path)
+        sga_storage.modified_time(file_path)
     ).astimezone(
         pytz.utc
     )
