@@ -24,8 +24,9 @@
     <% if (uploaded) { %>
       <div class="sequential-status-message">
         <p>
-          <b>{% trans "File uploaded" %}</b>
+          <b>{% trans "El archivo" %}</b>
           <a href="<%= downloadUrl %>"><%= uploaded.filename %></a>
+          <b> {% trans "se cargó correctamente" %}</b>
         </p>
         <p>
           <% if (graded) { %>
@@ -39,11 +40,14 @@
               <b>{% trans "Annotated file from instructor" %}</b>
               <a href="<%= annotatedUrl %>"><%= annotated.filename %></a><br/>
             <% } %>
-          <% } else if (uploaded) { %>
+          <% } else if (uploaded && !(upload_allowed && display_submit)) { %>
             {% trans "This assignment has not yet been graded." %}
           <% } %>
         </p>
         <% if (upload_allowed && display_submit) { %>
+          <p><b>
+            {% trans "Para finalizar, presione el botón Enviar. De lo contrario, su trabajo no será calificado." %}
+          </b></p>
           <p>
             <button type="button" class="submit btn-brand finalize-upload">
               <span class="">{% trans "Submit" %}</span>
