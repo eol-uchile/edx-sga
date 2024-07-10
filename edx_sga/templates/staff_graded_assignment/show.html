@@ -29,7 +29,9 @@
         </p>
         <p>
           <% if (graded) { %>
-            {% blocktrans %}Your score is <%= graded.score %> / <%= max_score %>{% endblocktrans %}<br/>
+            <% if (max_score > 0) { %>
+              {% blocktrans %}Your score is <%= graded.score %> / <%= max_score %>{% endblocktrans %}<br/>
+            <% } %>
             <% if (graded.comment) { %>
               <b>{% trans "Instructor comment" %}</b> <%= graded.comment %><br/>
             <% } %>
@@ -43,13 +45,18 @@
         </p>
         <% if (upload_allowed) { %>
           <p>
-            <a class="button finalize-upload">Submit</a>
+            <button type="button" class="submit btn-brand finalize-upload">
+              <span class="">{% trans "Submit" %}</span>
+            </button>
           </p>
         <% } %>
       </div>
     <% } %>
     <% if (solution) { %>
       <div class="solution">
+        <p>
+          <b>{% trans "Solution" %}:</b>
+        </p>
         <%= solution %>
       </div>
     <% } %>
