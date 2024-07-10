@@ -33,21 +33,15 @@ def get_file_modified_time_utc(file_path):
     """
     Gets the UTC timezone-aware modified time of a file at the given file path
     """
-    file_timezone = (
-        # time.tzname returns a 2 element tuple:
-        #   (local non-DST timezone, e.g.: 'EST', local DST timezone, e.g.: 'EDT')
-        pytz.timezone(time.tzname[0])
-        if settings.DEFAULT_FILE_STORAGE
-        == "django.core.files.storage.FileSystemStorage"
-        else pytz.utc
+    if settings.DEFAULT_FILE_STORAGE == 'django.core.files.storage.FileSystemStorage':
+        return pytz.utc.localize(datetime.datetime.utcfromtimestamp(os.path.getmtime(default_storage.path(file_path))))
+    file_timezone = pytz.utc
+
+    return file_timezone.localize(
+        default_storage.modified_time(file_path)
+    ).astimezone(
+        pytz.utc
     )
-
-    file_time = default_storage.get_modified_time(file_path)
-
-    if file_time.tzinfo is None:
-        return file_timezone.localize(file_time).astimezone(pytz.utc)
-    else:
-        return file_time.astimezone(pytz.utc)
 
 
 def get_sha1(file_descriptor):
