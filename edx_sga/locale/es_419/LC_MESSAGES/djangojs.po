@@ -1,0 +1,80 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-05-06 20:03+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: static/js/src/edx_sga.js:24
+msgid "Started preparing student submissions zip file. This may take a while."
+msgstr "Preparando archivo zip con los envíos de los estudiantes. Esto puede tomar un momento."
+
+#: static/js/src/edx_sga.js:43
+msgid "Submission failed. Please contact your course instructor."
+msgstr "Envio fallido. Por favor contacte a su instructor."
+
+#: static/js/src/edx_sga.js:55
+msgid "Uploading..."
+msgstr "Subiendo..."
+
+#: static/js/src/edx_sga.js:62 static/js/src/edx_sga.js:86
+msgid "The file you are trying to upload is too large."
+msgstr "El archivo que intentas subir es muy grande."
+
+#: static/js/src/edx_sga.js:89
+msgid "There was an error uploading your file."
+msgstr "Ocurrio un error subiendo el archivo."
+
+#: static/js/src/edx_sga.js:161
+msgid "Uploading... %(percent)s %"
+msgstr "Subiendo... %(percent)s %"
+
+#: static/js/src/edx_sga.js:195
+msgid "yes"
+msgstr "si"
+
+#: static/js/src/edx_sga.js:241
+msgid "Grade must be a number."
+msgstr "Calificación debe ser un numero."
+
+#: static/js/src/edx_sga.js:243
+msgid "Grade must be an integer."
+msgstr "Calificación debe ser un numero entero."
+
+#: static/js/src/edx_sga.js:245
+msgid "Grade must be positive."
+msgstr "Calificación debe ser positiva"
+
+#: static/js/src/edx_sga.js:247
+msgid "Maximum score is %(max_score)s"
+msgstr "Calificación maxima es %(max_score)s"
+
+#: static/js/src/edx_sga.js:263
+msgid "No grade to remove."
+msgstr "Sin calificación que remover."
+
+#: static/js/src/edx_sga.js:350
+msgid "An error occurred while trying to prepare your submission file"
+msgstr "Un error a ocurrido preparando el archivo de envio"
+
+#: static/js/src/edx_sga.js:364
+msgid "Student submission file ready for download"
+msgstr "Archivo de envíos listo para descarga"
+
+#: static/js/src/edx_sga.js:371
+msgid ""
+"An error occurred while trying to get the status of your submission file."
+msgstr "Un error a ocurrido al intentar obtener el estado del archivo enviado"

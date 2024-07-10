@@ -1,0 +1,294 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-05-06 19:42+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: sga.py:82
+msgid "Display Name"
+msgstr "Nombre a Mostrar"
+
+#: sga.py:83 templates/staff_graded_assignment/show.html:148
+msgid "Staff Graded Assignment"
+msgstr "Trabajo Calificado"
+
+#: sga.py:85
+msgid "This name appears in the horizontal navigation at the top of the page."
+msgstr "Este nombre aparece en la barra de navegacion horizontal en la parte superior de la pagina"
+
+#: sga.py:90
+msgid "Problem Weight"
+msgstr "Peso del problema"
+
+#: sga.py:91
+msgid ""
+"Defines the number of points each problem is worth. If the value is not set, "
+"the problem is worth the sum of the option point values."
+msgstr ""
+
+#: sga.py:99
+msgid "Maximum score"
+msgstr "Puntaje Maximo"
+
+#: sga.py:100
+msgid "Maximum grade score given to assignment by staff."
+msgstr "Puntaje maximo a entregar por el instructor"
+
+#: sga.py:106
+msgid "Score assigned by non-instructor staff"
+msgstr "Puntaje Asignado por personal no instructor"
+
+#: sga.py:107
+msgid "Score will need to be approved by instructor before being published."
+msgstr "El puntaje debe ser aprobado por el instructor antes de ser publicado."
+
+#: sga.py:114 templates/staff_graded_assignment/show.html:33
+msgid "Instructor comment"
+msgstr "Comentario de Instructor"
+
+#: sga.py:117
+msgid "Feedback given to student by instructor."
+msgstr "Retroalimentación dada al estudiante por el instructor"
+
+#: sga.py:121
+msgid "Annotated SHA1"
+msgstr "SHA1 retroalimentación"
+
+#: sga.py:124
+msgid ""
+"sha1 of the annotated file uploaded by the instructor for this assignment."
+msgstr "sha1 del archivo de retroalimentación ingresado por el instructor de este trabajo."
+
+#: sga.py:129
+msgid "Annotated file name"
+msgstr "Nombre del archivo de retroalimentación"
+
+#: sga.py:132
+msgid "The name of the annotated file uploaded for this assignment."
+msgstr "Nombre del archivo de retroalimentación subido a este trabajo."
+
+#: sga.py:136
+msgid "Mime type of annotated file"
+msgstr "Tipo mime del archivo de retroalimentación"
+
+#: sga.py:139
+msgid "The mimetype of the annotated file uploaded for this assignment."
+msgstr "Tipo mime del archivo de retroalimentaciónción subido a este trabajo."
+
+#: sga.py:143
+msgid "Timestamp"
+msgstr "Fecha"
+
+#: sga.py:146
+msgid "When the annotated file was uploaded"
+msgstr "Cuando el archivo de retroalimentación fue subido"
+
+#: showanswer.py:22
+msgid "Show Answer"
+msgstr "Mostrar Respuesta"
+
+#: showanswer.py:23
+msgid ""
+"Defines when to show the answer to the problem. A default value can be set "
+"in Advanced Settings."
+msgstr "Define cuando mostrar la respuesta al problema. Un valor por defecto puede ser configurado en Configuración Avanzada."
+
+#: showanswer.py:28
+msgid "Always"
+msgstr "Siempre"
+
+#: showanswer.py:29
+msgid "Answered"
+msgstr "Respondido"
+
+#: showanswer.py:30
+msgid "Attempted"
+msgstr "Intentado"
+
+#: showanswer.py:31
+msgid "Closed"
+msgstr "Cerrado"
+
+#: showanswer.py:32
+msgid "Finished"
+msgstr "Finalizado"
+
+#: showanswer.py:33
+msgid "Correct or Past Due"
+msgstr "Correcto o Fecha Vencida"
+
+#: showanswer.py:34
+msgid "Past Due"
+msgstr "Fecha Vencida"
+
+#: showanswer.py:35
+msgid "Never"
+msgstr "Nunca"
+
+#: showanswer.py:39
+msgid "Solution to the problem to show to the user"
+msgstr "Solución al problema mostrado al usuario"
+
+#: showanswer.py:40
+msgid "Solution"
+msgstr "Solución"
+
+#: templates/staff_graded_assignment/show.html:15
+msgid "Upload a different file"
+msgstr "Subir un archivo diferente"
+
+#: templates/staff_graded_assignment/show.html:17
+msgid "Upload your assignment"
+msgstr "Subir tu trabajo"
+
+#: templates/staff_graded_assignment/show.html:26
+msgid "File uploaded"
+msgstr "Archivo subido"
+
+#: templates/staff_graded_assignment/show.html:31
+#, python-format
+msgid "Your score is <%%= graded.score %%> / <%%= max_score %%>"
+msgstr "Tu puntaje es <%%= graded.score %%> / <%%= max_score %%>"
+
+#: templates/staff_graded_assignment/show.html:36
+msgid "Annotated file from instructor"
+msgstr "Archivo de retroalimentación del instructor"
+
+#: templates/staff_graded_assignment/show.html:40
+msgid "This assignment has not yet been graded."
+msgstr "Este trabajo aún no ha sido evaluado."
+
+#: templates/staff_graded_assignment/show.html:68
+msgid "Username"
+msgstr "Nombre de Usuario"
+
+#: templates/staff_graded_assignment/show.html:69
+msgid "Name"
+msgstr "Nombre"
+
+#: templates/staff_graded_assignment/show.html:70
+msgid "Filename"
+msgstr "Nombre de archivo"
+
+#: templates/staff_graded_assignment/show.html:71
+msgid "Uploaded"
+msgstr "Subido"
+
+#: templates/staff_graded_assignment/show.html:72
+msgid "Submitted"
+msgstr "Enviado"
+
+#: templates/staff_graded_assignment/show.html:73
+msgid "Grade"
+msgstr "Nota"
+
+#: templates/staff_graded_assignment/show.html:74
+msgid "Instructor's comments"
+msgstr "Comentarios de Instructor"
+
+#: templates/staff_graded_assignment/show.html:75
+msgid "Annotated"
+msgstr "Retroalimentación"
+
+#: templates/staff_graded_assignment/show.html:76
+msgid "Actions"
+msgstr "Acción"
+
+#: templates/staff_graded_assignment/show.html:95
+msgid "Yes"
+msgstr "Si"
+
+#: templates/staff_graded_assignment/show.html:97
+msgid "No"
+msgstr "No"
+
+#: templates/staff_graded_assignment/show.html:105
+msgid "Awaiting instructor approval"
+msgstr "Esperando aprovación de instructor"
+
+#: templates/staff_graded_assignment/show.html:121
+msgid "Approve grade"
+msgstr "Aprovar Calificación"
+
+#: templates/staff_graded_assignment/show.html:123
+msgid "Enter grade"
+msgstr "Ingresar Calificación"
+
+#: templates/staff_graded_assignment/show.html:130
+msgid "Upload annotated file"
+msgstr "Subir archivo de calificación"
+
+#: templates/staff_graded_assignment/show.html:143
+msgid "Grade Submissions"
+msgstr "Calificar Envíos"
+
+#: templates/staff_graded_assignment/show.html:151
+msgid "Download All Submissions"
+msgstr "Descargar Todos Los Envíos"
+
+#: templates/staff_graded_assignment/show.html:155
+msgid "Loading..."
+msgstr "Cargando..."
+
+#: templates/staff_graded_assignment/show.html:163
+msgid "Staff Debug"
+msgstr ""
+
+#: templates/staff_graded_assignment/show.html:166
+msgid "is_released"
+msgstr ""
+
+#: templates/staff_graded_assignment/show.html:167
+msgid "location"
+msgstr ""
+
+#: templates/staff_graded_assignment/show.html:170
+msgid "Module Fields"
+msgstr ""
+
+#: templates/staff_graded_assignment/show.html:180
+msgid "category"
+msgstr ""
+
+#: templates/staff_graded_assignment/show.html:188
+msgid "Enter Grade"
+msgstr "Ingresar Calificación"
+
+#: templates/staff_graded_assignment/show.html:195
+#, python-format
+msgid "Grade for %(student_name)s"
+msgstr "Calificación de %(student_name)s"
+
+#: templates/staff_graded_assignment/show.html:196
+msgid "Grade:"
+msgstr "Calificación:"
+
+#: templates/staff_graded_assignment/show.html:198
+msgid "Comment:"
+msgstr "Comentario:"
+
+#: templates/staff_graded_assignment/show.html:200
+msgid "Submit"
+msgstr "Enviar"
+
+#: templates/staff_graded_assignment/show.html:202
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: templates/staff_graded_assignment/show.html:205
+msgid "Remove grade"
+msgstr "Remover calificación"
