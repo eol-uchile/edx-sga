@@ -96,6 +96,11 @@
     line-height: normal;
 }
 
+.sga-block td .upload.disabled {
+    cursor: default;
+    opacity: 0.5;
+}
+
 .sga-block .error {
     color: red;
 }
