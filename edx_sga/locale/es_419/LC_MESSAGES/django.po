@@ -39,6 +39,14 @@ msgid "Display submit button after student uploads a file"
 msgstr "Habilitar botón 'Enviar' después que un estudiante sube un archivo"
 
 #: sga.py:90
+msgid "No. of Attempts"
+msgstr "Nro. de Intentos"
+
+#: sga.py:90
+msgid "Integer representing how many times the problem can be answered"
+msgstr "Entero que representa cuantas veces se puede responder problema"
+
+#: sga.py:90
 msgid "Problem Weight"
 msgstr "Peso del problema"
 
@@ -198,7 +206,7 @@ msgstr "Subido"
 
 #: templates/staff_graded_assignment/show.html:72
 msgid "Submitted"
-msgstr "Enviado"
+msgstr "Finalizado"
 
 #: templates/staff_graded_assignment/show.html:73
 msgid "Grade"
@@ -242,7 +250,7 @@ msgstr "Subir archivo de retroalimentación"
 
 #: templates/staff_graded_assignment/show.html:145
 msgid "Reset Submission"
-msgstr "Permitir nuevo envío"
+msgstr "Reiniciar conteo de envíos"
 
 #: templates/staff_graded_assignment/show.html:143
 msgid "Grade Submissions"
@@ -304,3 +312,7 @@ msgstr "Cancelar"
 #: templates/staff_graded_assignment/show.html:205
 msgid "Remove grade"
 msgstr "Remover calificación"
+
+#: templates/staff_graded_assignment/show.html:205
+msgid "The deadline for this task has passed."
+msgstr "El plazo de entrega para esta tarea a finalizado."

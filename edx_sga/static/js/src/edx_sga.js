@@ -14,6 +14,7 @@ function StaffGradedAssignmentXBlock(runtime, element) {
         );
         var staffUploadUrl = runtime.handlerUrl(element, 'staff_upload_annotated');
         var staffResetSubmissionUrl = runtime.handlerUrl(element, 'staff_reset_submission');
+        var staffStartReviewUrl = runtime.handlerUrl(element, 'staff_start_review');
         var enterGradeUrl = runtime.handlerUrl(element, 'enter_grade');
         var removeGradeUrl = runtime.handlerUrl(element, 'remove_grade');
         var downloadSubmissionsUrl = runtime.handlerUrl(element, 'download_submissions');
@@ -151,9 +152,19 @@ function StaffGradedAssignmentXBlock(runtime, element) {
 
             // Set up grade entry modal
             $(element).find('.enter-grade-button')
-                .leanModal({closeButton: '#enter-grade-cancel'})
-                .on('click', handleGradeEntry);
+              .leanModal({closeButton: '#enter-grade-cancel'})
+              .on('click', handleGradeEntry);
 
+            if(!data.is_past_due && data.has_due_date){
+              $(element).find('.enter-grade-button')
+              .addClass('disabled');
+
+              $(element).find('.upload')
+              .addClass('disabled',true);
+              
+              $(element).find('.fileupload')
+              .prop('disabled',true); 
+            }
             // Set up reset submission
             $(element).find('#grade-info .reset-submission button').click( function() {
                 var row = $(this).parents("tr");
@@ -245,9 +256,18 @@ function StaffGradedAssignmentXBlock(runtime, element) {
             form.find('.error').html(error);
         }
 
-        /* Click event handler for "enter grade" */
+        function staffStartReview(student_id){
+          $.post(staffStartReviewUrl, {'student_id':student_id})
+            .success(function() {
+            })
+            .fail(function() {
+                console.log("ERROR on staff strat review")
+            });
+        }
+
         function handleGradeEntry() {
             var row = $(this).parents("tr");
+            staffStartReview(row.data("student_id"));
             var form = $(element).find("#enter-grade-form");
             $(element).find('#student-name').text(row.data('fullname'));
             form.find('#module_id-input').val(row.data('module_id'));
@@ -257,25 +277,25 @@ function StaffGradedAssignmentXBlock(runtime, element) {
             form.find('#remove-grade').prop('disabled', false);
             form.find('.ccx-enter-grade-spinner').hide();
             form.off('submit').on('submit', function(event) {
-                var max_score = row.parents('#grade-info').data('max_score');
-                var score = Number(form.find('#grade-input').val());
-                event.preventDefault();
-                if (!score && score !== 0) {
-                    gradeFormError('<br/>'+gettext('Grade must be a number.'));
-                } else if (score !== parseInt(score)) {
-                    gradeFormError('<br/>'+gettext('Grade must be an integer.'));
-                } else if (score < 0) {
-                    gradeFormError('<br/>'+gettext('Grade must be positive.'));
-                } else if (score > max_score) {
-                    gradeFormError('<br/>'+interpolate(gettext('Maximum score is %(max_score)s'), {max_score:max_score}, true));
-                } else {
-                    // No errors
-                    form.find('.ccx-enter-grade-spinner').show();
-                    $.post(enterGradeUrl, form.serialize())
-                        .success(renderStaffGrading)
-                        .fail(function() {
-                            form.find('.ccx-enter-grade-spinner').hide();
-                        });
+              var max_score = row.parents('#grade-info').data('max_score');
+              var score = Number(form.find('#grade-input').val());
+              event.preventDefault();
+              if (!score && score !== 0) {
+                  gradeFormError('<br/>'+gettext('Grade must be a number.'));
+              } else if (score !== parseInt(score)) {
+                  gradeFormError('<br/>'+gettext('Grade must be an integer.'));
+              } else if (score < 0) {
+                  gradeFormError('<br/>'+gettext('Grade must be positive.'));
+              } else if (score > max_score) {
+                  gradeFormError('<br/>'+interpolate(gettext('Maximum score is %(max_score)s'), {max_score:max_score}, true));
+              } else {
+                // No errors
+                form.find('.ccx-enter-grade-spinner').show();
+                $.post(enterGradeUrl, form.serialize())
+                  .success(renderStaffGrading)
+                  .fail(function() {
+                      form.find('.ccx-enter-grade-spinner').hide();
+                  });
                 }
             });
             form.find('#remove-grade').off('click').on('click', function(event) {
