@@ -1,8 +1,7 @@
 {% load i18n %}
 
-<div class="sga-block" data-state="{{ student_state }}"
-     data-max-size="{{ max_file_size }}" data-support-email="{{ support_email }}"
-     data-staff="{{ is_course_staff }}">
+<div class="sga-block" data-state="{{ student_state }}" data-max-size="{{ max_file_size }}"
+  data-support-email="{{ support_email }}" data-staff="{{ is_course_staff }}">
   <script type="text/template" id="sga-tmpl">
     <% if (display_name) { %>
       <p>
@@ -30,24 +29,36 @@
         </p>
         <p>
           <% if (graded) { %>
-            <% if (max_score > 0) { %>
-              {% blocktrans %}Your score is <%= graded.score %> / <%= max_score %>{% endblocktrans %}<br/>
-            <% } %>
-            <% if (graded.comment) { %>
-              <b>{% trans "Instructor comment" %}</b> <%= graded.comment %><br/>
-            <% } %>
-            <% if (annotated) { %>
-              <b>{% trans "Annotated file from instructor" %}</b>
-              <a href="<%= annotatedUrl %>"><%= annotated.filename %></a><br/>
+            <% if (no_grade) { %>
+                <b><%= auto_comment %></b> <br/>
+            <% } else { %>
+              <% if (max_score > 0) { %>
+                Your score is <%= graded.score %> / <%= max_score %><br/>
+              <% } %>
+              <% if (graded.comment) { %>
+                <b>{% trans "Instructor comment" %}</b> <%= graded.comment %><br/>
+              <% } %>
+              <% if (annotated) { %>
+                <b>{% trans "Annotated file from instructor" %}</b>
+                <a href="<%= annotatedUrl %>"><%= annotated.filename %></a><br/>
+              <% } %>
             <% } %>
           <% } else if (uploaded && !(upload_allowed && display_submit)) { %>
             {% trans "This assignment has not yet been graded." %}
           <% } %>
         </p>
         <% if (upload_allowed && display_submit) { %>
-          <p><b>
-            {% trans "Para finalizar, presione el botón Enviar. De lo contrario, su trabajo no será calificado." %}
-          </b></p>
+          <p>
+            <% if (no_grade) { %>
+            <b>
+              {% trans "Para finalizar, presione el botón Enviar." %}
+            </b>
+            <% } else { %>
+              <b>
+                {% trans "Para finalizar, presione el botón Enviar. De lo contrario, su trabajo no será calificado." %}
+              </b>
+            <% } %>
+          </p>
           <p>
             <button type="button" class="submit btn-brand finalize-upload">
               <span class="">{% trans "Submit" %}</span>
@@ -121,7 +132,7 @@
                 ({% trans "Awaiting instructor approval" %})
               <% } %>
             <% } %>
-          </td>
+          </td>0
           <td><%= assignment.comment %></td>
           <td>
             <% if (assignment.annotated && assignment.annotated != "None") { %>
@@ -167,16 +178,17 @@
   </script>
 
   <div aria-hidden="true" class="wrap-instructor-info">
-    <a class="instructor-info-action" id="grade-submissions-button"
-       href="#grade-{{ id }}">{% trans "Grade Submissions" %}</a>
+    <a class="instructor-info-action" id="grade-submissions-button" href="#grade-{{ id }}">{% trans "Grade Submissions" %}</a>
   </div>
 
   <section aria-hidden="true" class="modal staff-modal" id="grade-{{ id }}" style="height: 75%" tabindex="-1">
     <div class="inner-wrapper" style="color: black; overflow: auto;">
-      <header><h2><span class="display_name">{{ display_name }}</span> - {% trans "Staff Graded Assignment" %}</h2></header>
-      <br/>
+      <header>
+        <h2><span class="display_name">{{ display_name }}</span> - {% trans "Staff Graded Assignment" %}</h2>
+      </header>
+      <br />
       <div>
-        <a class="instructor-info-action button btn-download-all" href="#" id="download-init-button">{% trans "Download All Submissions" %}</a>
+        <a class="instructor-info-action button btn-download-all" href="#" id="download-init-button">{% trans "DownloadAll Submissions" %}</a>
       </div>
       <p class="task-message"></p>
       <div id="grade-info" style="display: block;">
@@ -185,17 +197,20 @@
     </div>
   </section>
 
-  <section aria-hidden="true" class="modal staff-modal"
-           style="height: 80%" id="debug-{{ id }}" tabindex="-1">
+  <section aria-hidden="true" class="modal staff-modal" style="height: 80%" id="debug-{{ id }}" tabindex="-1">
     <div class="inner-wrapper" style="color: black">
-      <header><h2>{% trans "Staff Debug" %}</h2></header>
-      <br/>
+      <header>
+        <h2>{% trans "Staff Debug" %}</h2>
+      </header>
+      <br />
       <div class="staff_info" style="display: block; white-space: normal">
-        {% trans "is_released" %} = {{ is_released }}<br/>
-        {% trans "location" %} = {{ location }}<br/>
-        <br/>
+        {% trans "is_released" %} = {{ is_released }}<br />
+        {% trans "location" %} = {{ location }}<br />
+        <br />
         <table summary="${_('Module Fields')}">
-          <tr><th>{% trans "Module Fields" %}</th></tr>
+          <tr>
+            <th>{% trans "Module Fields" %}</th>
+          </tr>
           {% for name, field in fields %}
           <tr>
             <td>{{name}}</td>
@@ -204,7 +219,7 @@
             </td>
           </tr>
           {% endfor %}
-        </table><br/>
+        </table><br />
         {% trans "category" %} = {{category}}
       </div>
     </div>
@@ -212,17 +227,20 @@
 
   <section aria-hidden="true" class="modal grade-modal" id="enter-grade-{{ id }}" tabindex="-1">
     <div class="inner-wrapper" style="color: black">
-      <header><h2>
-        {% trans "Enter Grade" %}
-      </h2></header>
-      <br/>
+      <header>
+        <h2>
+          {% trans "Enter Grade" %}
+        </h2>
+      </header>
+      <br />
       <div style="display: block;">
         <form id="enter-grade-form">
-          <input id="module_id-input" type="hidden" name="module_id"/>
-          <input id="submission_id-input" type="hidden" name="submission_id"/>
-          <div>{% blocktrans with student_name="<span id='student-name'/>" %}Grade for {{student_name}}{% endblocktrans %}</div>
-          <div>{% trans "Grade:" %} <input id="grade-input" name="grade"/>
-            <span class="error"></span></div>
+          <input id="module_id-input" type="hidden" name="module_id" />
+          <input id="submission_id-input" type="hidden" name="submission_id" />
+          <div>Grade for <span id='student-name' /></div>
+          <div>{% trans "Grade:" %} <input id="grade-input" name="grade" />
+            <span class="error"></span>
+          </div>
           <div>{% trans "Comment:" %} <textarea id="comment-input" name="comment" rows="4"></textarea></div>
           <div>
             <button type="submit">{% trans "Submit" %}</button>

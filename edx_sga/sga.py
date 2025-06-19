@@ -78,7 +78,7 @@ class StaffGradedAssignmentXBlock(StudioEditableXBlockMixin, ShowAnswerXBlockMix
     has_score = True
     icon_class = 'problem'
     STUDENT_FILEUPLOAD_MAX_SIZE = 40 * 1000 * 1000  # 40 MB
-    editable_fields = ('display_name', 'display_submit', 'points', 'weight', 'showanswer', 'solution')
+    editable_fields = ('display_name', 'display_submit', 'points', 'weight', 'showanswer', 'solution', 'no_grade', 'auto_comment')
 
     display_name = String(
         display_name=_("Display Name"),
@@ -126,6 +126,13 @@ class StaffGradedAssignmentXBlock(StudioEditableXBlockMixin, ShowAnswerXBlockMix
         help=_("Feedback given to student by instructor.")
     )
 
+    no_grade = Boolean(
+        display_name=_("No grade"),
+        default=False,
+        scope=Scope.settings,
+        help=_("If true, the assignment will not be graded. This is used to allow students to submit an assignment without being graded.")
+    )
+
     annotated_sha1 = String(
         display_name=_("Annotated SHA1"),
         scope=Scope.user_state,
@@ -154,6 +161,14 @@ class StaffGradedAssignmentXBlock(StudioEditableXBlockMixin, ShowAnswerXBlockMix
         default=None,
         help=_("When the annotated file was uploaded")
     )
+
+    auto_comment = String(
+        display_name=_("Auto comment"),
+        default='Not Graded | No Calificado',
+        scope=Scope.settings,
+        help=_("Comment to be displayed to the student when the assignment is not graded. (only on that case)")
+    )
+
 
     @classmethod
     def student_upload_max_size(cls):
@@ -298,6 +313,30 @@ class StaffGradedAssignmentXBlock(StudioEditableXBlockMixin, ShowAnswerXBlockMix
             submission.answer['finalized'] = True
             submission.submitted_at = django_now()
             submission.save()
+            
+            # If no_grade is True, automatically assign the special comment and max score
+            if self.no_grade:
+                user = self.get_real_user()
+                student_module = self.get_or_create_student_module(user)
+                state = json.loads(student_module.state)
+                state['comment'] = self.auto_comment
+                student_module.state = json.dumps(state)
+                student_module.save()
+                
+                # Assign max score to show green checkmark
+                submissions_api.set_score(
+                    submission.uuid, 
+                    self.max_score(),       
+                    self.max_score()
+                )
+                
+                log.info(
+                    "Auto-assigned no_grade comment and max score for course:%s module:%s student:%s",
+                    student_module.course_id,
+                    student_module.module_state_key,
+                    student_module.student.username
+                )
+                
         return Response(json_body=self.student_state())
 
     @XBlock.handler
@@ -795,6 +834,9 @@ class StaffGradedAssignmentXBlock(StudioEditableXBlockMixin, ShowAnswerXBlockMix
         elif self.max_score() == 0 and (self.comment != '' or annotated is not None):
             # When the sga is not grade (max_score is zero), show results when the submission is commented or annotated
             graded = {'score': 0, 'comment': force_text(self.comment)}
+        elif self.no_grade and uploaded:
+            # When no_grade is True and there's a submission, show the special message
+            graded = {'score': None, 'comment': 'Received, Not Graded | Recibido, No Calificado'}
         else:
             graded = None
 
@@ -812,6 +854,8 @@ class StaffGradedAssignmentXBlock(StudioEditableXBlockMixin, ShowAnswerXBlockMix
             "max_score": self.max_score(),
             "upload_allowed": self.upload_allowed(submission_data=submission),
             "solution": solution,
+            "no_grade": self.no_grade,
+            "auto_comment": force_text(self.auto_comment),
             "base_asset_url": StaticContent.get_base_url_path_for_course_assets(self.location.course_key),
         }
 
