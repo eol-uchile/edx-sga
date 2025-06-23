@@ -21,7 +21,7 @@
       </p>
     <% } %>
     <% if (uploaded) { %>
-      <div class="sequential-status-message">
+      <div class="sequential-status-message" data-sga-sended="<%= filesended %>">
         <p>
           <b>{% trans "El archivo" %}</b>
           <a href="<%= downloadUrl %>"><%= uploaded.filename %></a>
@@ -60,7 +60,7 @@
             <% } %>
           </p>
           <p>
-            <button type="button" class="submit btn-brand finalize-upload">
+            <button type="button" class="submit btn-brand finalize-upload" aria-describedby="sga-submit-{{ id }}">
               <span class="">{% trans "Submit" %}</span>
             </button>
           </p>

@@ -820,8 +820,10 @@ class StaffGradedAssignmentXBlock(StudioEditableXBlockMixin, ShowAnswerXBlockMix
         submission = self.get_submission()
         if submission:
             uploaded = {"filename": submission['answer']['filename']}
+            filesended = submission['answer'].get('finalized', False)
         else:
             uploaded = None
+            filesended = False
 
         if self.annotated_sha1:
             annotated = {"filename": force_text(self.annotated_filename)}
@@ -857,6 +859,7 @@ class StaffGradedAssignmentXBlock(StudioEditableXBlockMixin, ShowAnswerXBlockMix
             "no_grade": self.no_grade,
             "auto_comment": force_text(self.auto_comment),
             "base_asset_url": StaticContent.get_base_url_path_for_course_assets(self.location.course_key),
+            "filesended": filesended,
         }
 
     def staff_grading_data(self):

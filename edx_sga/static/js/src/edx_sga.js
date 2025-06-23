@@ -25,7 +25,16 @@ function StaffGradedAssignmentXBlock(runtime, element) {
           'Started preparing student submissions zip file. This may take a while.'
         );
 
+        // Add variables for state caching
+        var $xblocksContainer = $('#seq_content');
+        var xblockId = $(element).find('.sga-block').attr('data-usage-id') || $(element).find('.sga-block').attr('id');
+        var cachedStateId = xblockId + '_sga_state';
+        var cachedSubmissionStateId = xblockId + '_sga_submission_state';
+
         function render(state) {
+            // Cache state for page navigation
+            $xblocksContainer.data(cachedStateId, state);
+            
             // Add download urls to template context
             state.downloadUrl = downloadUrl;
             state.annotatedUrl = annotatedUrl;
@@ -37,6 +46,12 @@ function StaffGradedAssignmentXBlock(runtime, element) {
             $(content).find('.finalize-upload').on('click', function() {
               $.post(finalizeUploadUrl).success(
                   function (state) {
+                      // Cache the submission state
+                      $xblocksContainer.data(cachedSubmissionStateId, {
+                          has_submission: true,
+                          submission_time: new Date().toISOString(),
+                          state: state
+                      });
                       render(state);
                   }
               ).fail(
@@ -111,6 +126,12 @@ function StaffGradedAssignmentXBlock(runtime, element) {
                         state.error = data.result.success;
                         render(state);
                     } else {
+                        // Cache the submission state when file is uploaded successfully
+                        $xblocksContainer.data(cachedSubmissionStateId, {
+                            has_submission: true,
+                            submission_time: new Date().toISOString(),
+                            state: data.result
+                        });
                         // The happy path, no errors
                         render(data.result);
                     }
@@ -339,6 +360,19 @@ function StaffGradedAssignmentXBlock(runtime, element) {
             var block = $(element).find('.sga-block');
             var state = block.attr('data-state');
             var parsedState = JSON.parse(state);
+            
+            // Check if we have cached submission state
+            var cachedSubmissionState = $xblocksContainer.data(cachedSubmissionStateId);
+            if (cachedSubmissionState && cachedSubmissionState.has_submission) {
+                console.log("Found cached submission state for SGA XBlock:", xblockId);
+                console.log("Cached submission state:", cachedSubmissionState);
+                
+                // Use the cached state instead of the initial state
+                parsedState = cachedSubmissionState.state;
+            } else {
+                console.log("No cached submission state found for SGA XBlock:", xblockId);
+            }
+            
             render(parsedState);
 
             var is_staff = isStaff();
@@ -388,7 +422,7 @@ function StaffGradedAssignmentXBlock(runtime, element) {
                             true
                           )
                         )
-                        .removeClass("preparing-msg")
+                        .removeClass("ready-msg")
                         .addClass("ready-msg");
                     }
                   );
