@@ -129,3 +129,19 @@
 .staff-modal .preparing-msg {
   color: red;
 }
+
+/* Botón submit states */
+.sga-block .sga-button-hidden {
+    display: none !important;
+}
+
+.sga-block .sga-button-disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.sga-block .sga-button-active {
+    opacity: 1;
+    cursor: pointer;
+}

@@ -1,7 +1,7 @@
 {% load i18n %}
 
 <div class="sga-block" data-state="{{ student_state }}" data-max-size="{{ max_file_size }}"
-  data-support-email="{{ support_email }}" data-staff="{{ is_course_staff }}">
+  data-support-email="{{ support_email }}" data-staff="{{ is_course_staff }}" id="sga_{{ id }}">
   <script type="text/template" id="sga-tmpl">
     <% if (display_name) { %>
       <p>
@@ -59,14 +59,17 @@
               </b>
             <% } %>
           </p>
-          <p>
-            <button type="button" class="submit btn-brand finalize-upload" aria-describedby="sga-submit-{{ id }}">
-              <span class="">{% trans "Submit" %}</span>
-            </button>
-          </p>
         <% } %>
       </div>
     <% } %>
+    <div class="submit-attempt-container">
+      <button type="button"  data-value="Enviar"  class="submit btn-brand finalize-upload 
+        <% if (!uploaded) { %>sga-button-hidden<% } else if (filesended) { %>sga-button-disabled<% } else { %>sga-button-active<% } %>" 
+        aria-describedby="sga-submit-{{ id }}" data-checking="Enviando..."
+        <% if (filesended) { %>disabled<% } %>>
+        <span class="">{% trans "Submit" %}</span>
+      </button>
+    </div>
     <% if (solution) { %>
       <div class="solution">
         <p>
