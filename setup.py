@@ -32,6 +32,7 @@ setup(
     install_requires=[
         'XBlock',
         'xblock-utils',
+        'django-storages[boto3]',
     ],
     entry_points={
         'xblock.v1': [
