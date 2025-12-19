@@ -78,7 +78,7 @@ class StaffGradedAssignmentXBlock(StudioEditableXBlockMixin, ShowAnswerXBlockMix
     has_score = True
     icon_class = 'problem'
     STUDENT_FILEUPLOAD_MAX_SIZE = 40 * 1000 * 1000  # 40 MB
-    editable_fields = ('display_name', 'display_submit', 'points', 'weight', 'showanswer', 'solution')
+    editable_fields = ('display_name', 'max_attempts', 'points', 'weight', 'showanswer', 'solution')
 
     display_name = String(
         display_name=_("Display Name"),
@@ -88,11 +88,23 @@ class StaffGradedAssignmentXBlock(StudioEditableXBlockMixin, ShowAnswerXBlockMix
                "the page.")
     )
 
-    display_submit = Boolean(
-        display_name=_("Display submit button"),
-        default=True,
+    max_attempts = Integer(
+        display_name=_("No. of Attempts"),
+        help=_("Integer representing how many times the problem can be answered"),
+        default=2,
+        values = [
+            {"display_name": "1", "value": 1},
+            {"display_name": "2", "value": 2},
+            {"display_name": "3", "value": 3},
+            {"display_name": "4", "value": 4},
+            {"display_name": "5", "value": 5},
+            {"display_name": "6", "value": 6},
+            {"display_name": "7", "value": 7},
+            {"display_name": "8", "value": 8},
+            {"display_name": "9", "value": 9},
+            {"display_name": "10", "value": 10}
+        ],
         scope=Scope.settings,
-        help=_("Display submit button after student uploads a file")
     )
 
     weight = Float(
@@ -153,6 +165,21 @@ class StaffGradedAssignmentXBlock(StudioEditableXBlockMixin, ShowAnswerXBlockMix
         scope=Scope.user_state,
         default=None,
         help=_("When the annotated file was uploaded")
+    )
+
+    annotated_finalized = Boolean(
+        display_name=_("Finalized"),
+        scope=Scope.user_state,
+        default=False,
+        help=_("Boolean representing whether the task was completed.")
+    )
+
+    annotated_attempts = Integer(
+        display_name=_("Attempts"),
+        help=_("How many times the student has tried to answer"),
+        default=0,
+        values={"min": 0},
+        scope=Scope.user_state,
     )
 
     @classmethod
@@ -219,6 +246,7 @@ class StaffGradedAssignmentXBlock(StudioEditableXBlockMixin, ShowAnswerXBlockMix
         Persist block data when updating settings in studio.
         """
         self.display_name = data.get('display_name', self.display_name)
+        self.max_attempts = data.get('max_attempts', self.max_attempts)
 
         # Validate points before saving
         points = data.get('points', self.points)
@@ -290,14 +318,18 @@ class StaffGradedAssignmentXBlock(StudioEditableXBlockMixin, ShowAnswerXBlockMix
         Finalize a student's uploaded submission. This prevents further uploads for the
         given block, and makes the submission available to instructors for grading
         """
+        # Editing the Submission record directly since the API doesn't support it
         submission_data = self.get_submission()
         require(self.upload_allowed(submission_data=submission_data))
-        # Editing the Submission record directly since the API doesn't support it
-        submission = Submission.objects.get(uuid=submission_data['uuid'])
-        if not submission.answer.get('finalized'):
+        
+        self.annotated_attempts = self.annotated_attempts +1
+        
+        if self.has_due_date():
+            submission = Submission.objects.get(uuid=submission_data['uuid'])
             submission.answer['finalized'] = True
             submission.submitted_at = django_now()
             submission.save()
+
         return Response(json_body=self.student_state())
 
     @XBlock.handler
@@ -309,12 +341,25 @@ class StaffGradedAssignmentXBlock(StudioEditableXBlockMixin, ShowAnswerXBlockMix
         require(self.is_course_staff())
         submission_data = self.get_submission(request.params['student_id'])
         # Editing the Submission record directly since the API doesn't support it
+        self.annotated_attempts = 0
         submission = Submission.objects.get(uuid=submission_data['uuid'])
         if submission.answer.get('finalized'):
             submission.answer['finalized'] = False
             submission.save()
         return Response(json_body=self.staff_grading_data())
-    
+
+    @XBlock.handler
+    def staff_start_review(self, request, suffix=''):
+        require(self.is_course_staff())
+        submission_data = self.get_submission(request.params['student_id'])
+        if not self.has_due_date():
+            submission = Submission.objects.get(uuid=submission_data['uuid'])
+            submission.answer['finalized'] = True
+            submission.submitted_at = django_now()
+            submission.save()
+        return Response(json_body=self.staff_grading_data())
+        
+
     @XBlock.handler
     def staff_upload_annotated(self, request, suffix=''):
         # pylint: disable=unused-argument
@@ -609,7 +654,11 @@ class StaffGradedAssignmentXBlock(StudioEditableXBlockMixin, ShowAnswerXBlockMix
             "student_state": json.dumps(self.student_state()),
             "id": self.location.name.replace('.', '_'),
             "max_file_size": self.student_upload_max_size(),
-            "support_email": settings.TECH_SUPPORT_EMAIL
+            "support_email": settings.TECH_SUPPORT_EMAIL,
+            "text_attempts": self.text_attempts(),
+            "no_more_attempts": self.no_more_attempts(),
+            "nr_of_attempts": self.max_attempts,
+            "attempts": self.annotated_attempts,
         }
         if self.show_staff_grading_interface():
             context['is_course_staff'] = True
@@ -805,7 +854,11 @@ class StaffGradedAssignmentXBlock(StudioEditableXBlockMixin, ShowAnswerXBlockMix
         # pylint: disable=no-member
         return {
             "display_name": force_text(self.display_name),
-            "display_submit": self.display_submit,
+            "max_attempts": self.max_attempts,
+            "text_attempts": self.text_attempts(),
+            "attempts": self.annotated_attempts,
+            "no_more_attempts": self.no_more_attempts(),
+            "is_past_due": self.is_past_due(),
             "uploaded": uploaded,
             "annotated": annotated,
             "graded": graded,
@@ -864,14 +917,19 @@ class StaffGradedAssignmentXBlock(StudioEditableXBlockMixin, ShowAnswerXBlockMix
                     'may_grade': instructor or not approved,
                     'annotated': force_text(state.get("annotated_filename", '')),
                     'comment': force_text(state.get("comment", '')),
-                    'finalized': is_finalized_submission(submission_data=submission)
+                    'finalized': is_finalized_submission(submission_data=submission),
+                    'no_more_attempts': self.no_more_attempts(),
+                    'attempts': self.annotated_attempts,
+
                 }
 
         return {
             'assignments': list(get_student_data()),
             'max_score': self.max_score(),
             'display_name': force_text(self.display_name),
-            "display_submit": self.display_submit
+            'max_attempts': self.max_attempts,
+            'has_due_date': self.has_due_date(),
+            "is_past_due":self.is_past_due()
         }
 
     def get_sorted_submissions(self):
@@ -884,8 +942,6 @@ class StaffGradedAssignmentXBlock(StudioEditableXBlockMixin, ShowAnswerXBlockMix
         )
 
         for submission in submissions:
-            #if is_finalized_submission(submission_data=submission):
-            # append all assigments
             assignments.append({
                 'submission_id': submission['uuid'],
                 'filename': submission['answer']["filename"],
@@ -959,6 +1015,11 @@ class StaffGradedAssignmentXBlock(StudioEditableXBlockMixin, ShowAnswerXBlockMix
         in_studio_preview = self.scope_ids.user_id is None
         return self.is_course_staff() and not in_studio_preview
 
+
+    def has_due_date(self):
+        due = get_extended_due_date(self)
+        return due is not None
+
     def past_due(self):
         """
         Return whether due date has passed.
@@ -985,11 +1046,34 @@ class StaffGradedAssignmentXBlock(StudioEditableXBlockMixin, ShowAnswerXBlockMix
         Return whether student is allowed to upload an assignment.
         """
         submission_data = submission_data if submission_data is not None else self.get_submission()
+        if not self.has_due_date() :
+            return (not is_finalized_submission(submission_data) and not self.no_more_attempts())
+
         return (
-            not self.past_due() and
-            self.score is None and
-            not is_finalized_submission(submission_data)
+            not self.past_due()
+            and not self.no_more_attempts()
         )
+
+    def text_attempts(self):
+        """
+        Return text to show how many attemps a student has made.
+        """
+        text_attempts = ""
+
+        if self.max_attempts and self.max_attempts > 0:
+            text_attempts = "Ha realizado "+str(self.annotated_attempts)+" de "+str(self.max_attempts)+" envíos"
+            if self.max_attempts == 1:
+                text_attempts = "Ha realizado "+str(self.annotated_attempts)+" de "+str(self.max_attempts)+" envío"
+        return(text_attempts)
+
+    def no_more_attempts(self):
+        no_more_attempts = False
+
+        if self.max_attempts and self.max_attempts > 0:
+            if self.annotated_attempts >= self.max_attempts:
+                no_more_attempts = True
+        return no_more_attempts
+
 
     def file_storage_path(self, file_hash, original_filename):
         # pylint: disable=no-member

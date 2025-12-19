@@ -48,11 +48,11 @@ msgstr "si"
 
 #: static/js/src/edx_sga.js:241
 msgid "Grade must be a number."
-msgstr "Calificación debe ser un numero."
+msgstr "Calificación debe ser un número."
 
 #: static/js/src/edx_sga.js:243
 msgid "Grade must be an integer."
-msgstr "Calificación debe ser un numero entero."
+msgstr "Calificación debe ser un número entero."
 
 #: static/js/src/edx_sga.js:245
 msgid "Grade must be positive."
